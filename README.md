@@ -1,0 +1,2 @@
+# AmazonCloneJuly
+simple amazon clone.
