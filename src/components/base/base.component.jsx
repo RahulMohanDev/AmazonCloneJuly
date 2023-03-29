@@ -13,13 +13,26 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Outlet, useNavigate } from 'react-router-dom';
+import ProductsContext from '../../context/products';
+import CartContext from '../../context/cart.context';
 
 const pages = [{name:'home',route:'/home'}, {name:'cart',route:'/cart'}];
 const settings = ['Logout'];
 
 export default function BaseComponent() {
+  const [productList, setProductList] = React.useState([]);
+  const [cart, setCart] = React.useState([]);
+
+  // Material UI kachada code
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+ 
+  React.useEffect(()=>{
+    fetch('https://content.newtonschool.co/v1/pr/63b6c911af4f30335b4b3b89/products')
+    .then((res)=>res.json())
+    .then((data)=>setProductList(data))
+  },[])
+
 
   const navigate = useNavigate();
 
@@ -40,6 +53,8 @@ export default function BaseComponent() {
 
   return (
     <>
+    <CartContext.Provider value={{cart, setCart}}>
+    <ProductsContext.Provider value={{productList, setProductList}}>
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -47,7 +62,6 @@ export default function BaseComponent() {
             variant="h6"
             noWrap
             component="a"
-            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -57,6 +71,7 @@ export default function BaseComponent() {
               color: 'inherit',
               textDecoration: 'none',
             }}
+            onClick={()=>{navigate('/home')}}
           >
             Amazon 
           </Typography>
@@ -67,7 +82,6 @@ export default function BaseComponent() {
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-              onClick={handleOpenNavMenu}
               color="inherit"
             >
               <MenuIcon />
@@ -94,7 +108,7 @@ export default function BaseComponent() {
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center" onClick={()=>{
                     navigate(page.route);
-                  }}>{page.name}</Typography>
+                  }}>{page.name}{page.name === 'cart' ? cart.length : ''}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -128,6 +142,7 @@ export default function BaseComponent() {
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page.name}
+                 {page.name === 'cart' ?`(${cart.length})` : ''} 
               </Button>
             ))}
           </Box>
@@ -168,6 +183,8 @@ export default function BaseComponent() {
       </Container>
     </AppBar>
     <Outlet></Outlet>
+    </ProductsContext.Provider>
+    </CartContext.Provider>
     </>
   );
 }

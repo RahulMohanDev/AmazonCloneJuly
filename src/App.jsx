@@ -1,9 +1,11 @@
 import './App.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import BaseComponent from './components/base/base.component'
-import Home from './components/home/home.componet'
-import Cart from './components/cart/cart.componet'
-import Login from './components/login/login.componen'
+import Home from './components/home/home.component'
+import Cart from './components/cart/cart.component'
+import Login from './components/login/login.component'
+import Catalogue from './components/home/catalogue/catalogue.component'
+import Products from './components/home/products/products.component'
 
 const router = createBrowserRouter([
   {
@@ -15,12 +17,12 @@ const router = createBrowserRouter([
         element: <Home />,
         children: [
           {
-            path: 'product',
-            element: <h1>The is product</h1>,
+            path: 'products/:id',
+            element: <Products />,
           },
           {
-            path: 'catalog',
-            element: <h1>The is catalog</h1>,
+            path: 'catalogue',
+            element: <Catalogue/>,
           },
         ],
       },
